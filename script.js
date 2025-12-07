@@ -12,6 +12,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // Discord Login Handler
+    const loginButton = document.querySelector('.btn-login');
+    if (loginButton) {
+        loginButton.addEventListener('click', function() {
+            // Generate random state for security
+            const state = Math.random().toString(36).substring(7);
+            localStorage.setItem('discord_auth_state', state);
+            
+            // Get current domain for redirect URI
+            const redirectUri = encodeURIComponent(`${window.location.origin}/api/discord/callback`);
+            
+            // Discord OAuth URL
+            const discordUrl = `https://discord.com/oauth2/authorize?client_id=1408328312815747143&redirect_uri=${redirectUri}&response_type=code&scope=identify+guilds.join&state=${state}&prompt=none`;
+            
+            // Redirect to Discord
+            window.location.href = discordUrl;
+        });
+    }
+    
     // Animate stat numbers
     const statNumbers = document.querySelectorAll('.stat-number');
     
@@ -42,4 +61,37 @@ document.addEventListener('DOMContentLoaded', function() {
     }, { threshold: 0.5 });
     
     observer.observe(document.querySelector('.hero-stats'));
+    
+    // Check if user is logged in (on page load)
+    checkLoginStatus();
 });
+
+// Check login status function
+async function checkLoginStatus() {
+    try {
+        const response = await fetch('/api/verify');
+        const data = await response.json();
+        
+        if (data.loggedIn && data.user) {
+            updateUIForLoggedInUser(data.user);
+        }
+    } catch (error) {
+        console.log('Not logged in or error:', error);
+    }
+}
+
+// Update UI when user is logged in
+function updateUIForLoggedInUser(user) {
+    const loginButton = document.querySelector('.btn-login');
+    if (loginButton) {
+        loginButton.innerHTML = `<i class="fas fa-user"></i> ${user.username}`;
+        loginButton.style.backgroundColor = '#8b0000';
+        loginButton.style.color = 'white';
+        
+        // Add logout functionality
+        loginButton.onclick = function() {
+            fetch('/api/discord/logout')
+                .then(() => window.location.reload());
+        };
+    }
+}
