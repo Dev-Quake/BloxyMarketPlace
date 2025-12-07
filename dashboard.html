@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Roblox Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dashboard-container {
+            min-height: 100vh;
+            padding-top: 100px;
+            padding-bottom: 50px;
+            background-color: #0a0a0a;
+        }
+        
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #8b0000;
+            margin: 0 auto 20px;
+            overflow: hidden;
+        }
+        
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .user-avatar .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: #8b0000;
+        }
+        
+        .user-info h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .user-id {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .dashboard-card {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid #333;
+            border-radius: 10px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+        
+        .dashboard-card:hover {
+            border-color: #8b0000;
+            transform: translateY(-5px);
+        }
+        
+        .dashboard-card h3 {
+            color: #8b0000;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 8px;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f0f0f0;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+        }
+        
+        .quick-actions {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .action-btn {
+            background: rgba(30, 30, 30, 0.5);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            color: #f0f0f0;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            border-color: #8b0000;
+            background: rgba(139, 0, 0, 0.1);
+        }
+        
+        .logout-btn {
+            background: #8b0000;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            width: 200px;
+            margin: 30px auto 0;
+        }
+        
+        .logout-btn:hover {
+            background: #a00000;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">ROBLOX<span>MARKET</span></a>
+                
+                <nav>
+                    <ul>
+                        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#"><i class="fas fa-store"></i> Store</a></li>
+                        <li><a href="#"><i class="fas fa-users"></i> Freelancers</a></li>
+                        <li><a href="#"><i class="fas fa-briefcase"></i> Hire</a></li>
+                        <li><a href="dashboard.html" class="active"><i class="fas fa-user-circle"></i> Dashboard</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="auth-buttons">
+                    <button class="btn btn-logout" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container container">
+        <div id="dashboardContent">
+            <!-- Content will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('robloxmarket_token');
+            const userData = localStorage.getItem('robloxmarket_user');
+            
+            if (!token || !userData) {
+                // Not logged in, redirect to login
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            try {
+                const user = JSON.parse(userData);
+                loadDashboard(user);
+            } catch (err) {
+                console.error('Error loading user data:', err);
+                window.location.href = 'login.html';
+            }
+        });
+        
+        function loadDashboard(user) {
+            const avatarUrl = user.avatar 
+                ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=256`
+                : null;
+            
+            const username = user.global_name || user.username;
+            const discriminator = user.discriminator !== "0" ? `#${user.discriminator}` : '';
+            
+            document.getElementById('dashboardContent').innerHTML = `
+                <div class="dashboard-header">
+                    <div class="user-avatar">
+                        ${avatarUrl 
+                            ? `<img src="${avatarUrl}" alt="${username}" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'avatar-placeholder\\'><i class=\\"fas fa-user\\"></i></div>';" />`
+                            : `<div class="avatar-placeholder"><i class="fas fa-user"></i></div>`
+                        }
+                    </div>
+                    <div class="user-info">
+                        <h1>${username}${discriminator}</h1>
+                        <div class="user-id">ID: ${user.id}</div>
+                        <p>Welcome to your Roblox Marketplace dashboard!</p>
+                    </div>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-chart-line"></i> Your Stats</h3>
+                        <div class="stats">
+                            <div class="stat-item">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">Listings</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">$0</div>
+                                <div class="stat-label">Earned</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">Sales</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">Reviews</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                        <div class="quick-actions">
+                            <a href="#" class="action-btn">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>Create New Listing</span>
+                            </a>
+                            <a href="#" class="action-btn">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>Browse Marketplace</span>
+                            </a>
+                            <a href="#" class="action-btn">
+                                <i class="fas fa-briefcase"></i>
+                                <span>Post a Job</span>
+                            </a>
+                            <a href="#" class="action-btn">
+                                <i class="fas fa-cog"></i>
+                                <span>Account Settings</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-bell"></i> Recent Activity</h3>
+                        <p style="color: #b0b0b0; text-align: center; padding: 20px;">
+                            <i class="fas fa-inbox"></i><br>
+                            No recent activity yet
+                        </p>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                        <p style="color: #b0b0b0; margin-bottom: 20px;">
+                            Your account is secured with Discord OAuth2.
+                        </p>
+                        <div class="quick-actions">
+                            <a href="#" class="action-btn">
+                                <i class="fab fa-discord"></i>
+                                <span>Connected to Discord</span>
+                                <span style="margin-left: auto; color: #00cc66;">
+                                    <i class="fas fa-check-circle"></i>
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            `;
+        }
+        
+        function logout() {
+            localStorage.removeItem('robloxmarket_token');
+            localStorage.removeItem('robloxmarket_user');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

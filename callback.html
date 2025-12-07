@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing Login | Roblox Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .processing-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background-color: #0a0a0a;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(139, 0, 0, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(139, 0, 0, 0.1) 0%, transparent 20%);
+        }
+        
+        .processing-card {
+            background: rgba(20, 20, 20, 0.9);
+            border: 1px solid #333;
+            border-radius: 15px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .processing-icon {
+            font-size: 4rem;
+            color: #5865F2;
+            margin-bottom: 20px;
+        }
+        
+        .processing-icon .fa-spinner {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .processing-card h1 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            color: #f0f0f0;
+        }
+        
+        .processing-card p {
+            color: #b0b0b0;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .processing-steps {
+            text-align: left;
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(30, 30, 30, 0.5);
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+        
+        .step {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: #888;
+        }
+        
+        .step.active {
+            color: #8b0000;
+        }
+        
+        .step.completed {
+            color: #00cc66;
+        }
+        
+        .step-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            background: #222;
+        }
+        
+        .step.active .step-icon {
+            background: #8b0000;
+        }
+        
+        .step.completed .step-icon {
+            background: #00cc66;
+        }
+        
+        .error-message {
+            color: #ff4444;
+            background: rgba(255, 68, 68, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ff4444;
+        }
+        
+        .retry-btn {
+            background-color: #8b0000;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+        }
+        
+        .retry-btn:hover {
+            background-color: #a00000;
+        }
+    </style>
+</head>
+<body>
+    <div class="processing-container">
+        <div class="processing-card">
+            <div class="processing-icon">
+                <i class="fab fa-discord fa-spin"></i>
+            </div>
+            
+            <h1 id="statusTitle">Processing Login</h1>
+            <p id="statusMessage">Please wait while we authenticate your Discord account...</p>
+            
+            <div class="processing-steps" id="processingSteps">
+                <div class="step" id="step1">
+                    <div class="step-icon">1</div>
+                    <span>Verifying Discord authorization</span>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-icon">2</div>
+                    <span>Fetching user profile</span>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-icon">3</div>
+                    <span>Creating session</span>
+                </div>
+                <div class="step" id="step4">
+                    <div class="step-icon">4</div>
+                    <span>Redirecting to dashboard</span>
+                </div>
+            </div>
+            
+            <div id="errorContainer" style="display: none;">
+                <div class="error-message" id="errorMessage"></div>
+                <button class="retry-btn" onclick="retryLogin()">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const state = urlParams.get('state');
+            const error = urlParams.get('error');
+            
+            // Get stored state from login
+            const storedState = localStorage.getItem('oauth_state');
+            
+            // Update steps visually
+            function updateStep(stepNumber, status) {
+                const step = document.getElementById(`step${stepNumber}`);
+                step.classList.remove('active', 'completed');
+                step.classList.add(status);
+            }
+            
+            // Handle errors
+            function showError(message) {
+                document.getElementById('statusTitle').textContent = 'Login Failed';
+                document.getElementById('statusMessage').textContent = message;
+                document.getElementById('errorMessage').textContent = message;
+                document.getElementById('errorContainer').style.display = 'block';
+                document.getElementById('processingSteps').style.display = 'none';
+                
+                // Stop spinner
+                document.querySelector('.processing-icon i').classList.remove('fa-spin');
+                document.querySelector('.processing-icon i').className = 'fas fa-exclamation-triangle';
+                document.querySelector('.processing-icon').style.color = '#ff4444';
+            }
+            
+            // Process the OAuth callback
+            async function processCallback() {
+                if (error) {
+                    showError(`Discord authorization failed: ${error}`);
+                    return;
+                }
+                
+                if (!code || !state) {
+                    showError('Missing authorization code. Please try logging in again.');
+                    return;
+                }
+                
+                if (state !== storedState) {
+                    showError('Security verification failed. State mismatch.');
+                    return;
+                }
+                
+                try {
+                    // Step 1: Verifying authorization
+                    updateStep(1, 'completed');
+                    updateStep(2, 'active');
+                    
+                    // Send code to backend for token exchange
+                    const response = await fetch('/api/callback', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            code: code,
+                            state: state
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Authentication failed');
+                    }
+                    
+                    // Step 2: Fetching user profile
+                    updateStep(2, 'completed');
+                    updateStep(3, 'active');
+                    
+                    // Store user data
+                    localStorage.setItem('robloxmarket_token', data.token);
+                    localStorage.setItem('robloxmarket_user', JSON.stringify(data.user));
+                    localStorage.removeItem('oauth_state'); // Clean up
+                    
+                    // Step 3: Creating session
+                    updateStep(3, 'completed');
+                    updateStep(4, 'active');
+                    
+                    // Update UI
+                    document.getElementById('statusTitle').textContent = 'Login Successful!';
+                    document.getElementById('statusMessage').textContent = 'Welcome to Roblox Marketplace!';
+                    document.querySelector('.processing-icon i').classList.remove('fa-spin');
+                    document.querySelector('.processing-icon i').className = 'fas fa-check-circle';
+                    document.querySelector('.processing-icon').style.color = '#00cc66';
+                    
+                    // Step 4: Redirect
+                    updateStep(4, 'completed');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1500);
+                    
+                } catch (err) {
+                    showError(err.message);
+                    console.error('Login error:', err);
+                }
+            }
+            
+            // Start processing
+            processCallback();
+            
+            // Timeout fallback
+            setTimeout(() => {
+                if (document.getElementById('statusTitle').textContent === 'Processing Login') {
+                    showError('Login timed out. Please try again.');
+                }
+            }, 30000);
+        });
+        
+        function retryLogin() {
+            localStorage.removeItem('oauth_state');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
