@@ -217,31 +217,30 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const discordLoginBtn = document.getElementById('discordLoginBtn');
-            
-            // Generate state for OAuth security
-            function generateState() {
-                return Array.from(crypto.getRandomValues(new Uint8Array(16)))
-                    .map(b => b.toString(16).padStart(2, '0'))
-                    .join('');
-            }
-            
-            discordLoginBtn.addEventListener('click', function() {
-                // Store state in localStorage for verification
-                const state = generateState();
-                localStorage.setItem('oauth_state', state);
-                
-                // Set loading state
-                discordLoginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirecting...';
-                discordLoginBtn.disabled = true;
-                
-                // Redirect to API auth endpoint
-                setTimeout(() => {
-                    window.location.href = `/api/auth?state=${state}`;
-                }, 500);
-            });
+      document.addEventListener('DOMContentLoaded', function() {
+        const discordLoginBtn = document.getElementById('discordLoginBtn');
+        
+        // Generate secure state
+        function generateState() {
+          return Array.from(crypto.getRandomValues(new Uint8Array(16)))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+        }
+        
+        discordLoginBtn.addEventListener('click', function() {
+          // Store state for verification
+          const state = generateState();
+          localStorage.setItem('oauth_state', state);
+          
+          // Set loading state
+          discordLoginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirecting to Discord...';
+          discordLoginBtn.disabled = true;
+          
+          // Redirect to your API endpoint
+          window.location.href = `/api/auth?state=${state}`;
         });
+      });
     </script>
 </body>
+
 </html>
