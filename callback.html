@@ -194,76 +194,76 @@
             
             // Process the OAuth callback
             async function processCallback() {
-                if (error) {
-                    showError(`Discord authorization failed: ${error}`);
-                    return;
-                }
-                
-                if (!code || !state) {
-                    showError('Missing authorization code. Please try logging in again.');
-                    return;
-                }
-                
-                if (state !== storedState) {
-                    showError('Security verification failed. State mismatch.');
-                    return;
-                }
-                
-                try {
-                    // Step 1: Verifying authorization
-                    updateStep(1, 'completed');
-                    updateStep(2, 'active');
-                    
-                    // Send code to backend for token exchange
-                    const response = await fetch('/api/callback', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            code: code,
-                            state: state
-                        })
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (!response.ok) {
-                        throw new Error(data.error || 'Authentication failed');
-                    }
-                    
-                    // Step 2: Fetching user profile
-                    updateStep(2, 'completed');
-                    updateStep(3, 'active');
-                    
-                    // Store user data
-                    localStorage.setItem('robloxmarket_token', data.token);
-                    localStorage.setItem('robloxmarket_user', JSON.stringify(data.user));
-                    localStorage.removeItem('oauth_state'); // Clean up
-                    
-                    // Step 3: Creating session
-                    updateStep(3, 'completed');
-                    updateStep(4, 'active');
-                    
-                    // Update UI
-                    document.getElementById('statusTitle').textContent = 'Login Successful!';
-                    document.getElementById('statusMessage').textContent = 'Welcome to Roblox Marketplace!';
-                    document.querySelector('.processing-icon i').classList.remove('fa-spin');
-                    document.querySelector('.processing-icon i').className = 'fas fa-check-circle';
-                    document.querySelector('.processing-icon').style.color = '#00cc66';
-                    
-                    // Step 4: Redirect
-                    updateStep(4, 'completed');
-                    
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1500);
-                    
-                } catch (err) {
-                    showError(err.message);
-                    console.error('Login error:', err);
-                }
-            }
+  if (error) {
+    showError(`Discord authorization failed: ${error}`);
+    return;
+  }
+  
+  if (!code || !state) {
+    showError('Missing authorization code. Please try logging in again.');
+    return;
+  }
+  
+  if (state !== storedState) {
+    showError('Security verification failed. State mismatch.');
+    return;
+  }
+  
+  try {
+    // Step 1: Verifying authorization
+    updateStep(1, 'completed');
+    updateStep(2, 'active');
+    
+    // Send code to your API endpoint
+    const response = await fetch('/api/callback', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        code: code,
+        state: state
+      })
+    });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.error || data.details || 'Authentication failed');
+    }
+    
+    // Step 2: Fetching user profile
+    updateStep(2, 'completed');
+    updateStep(3, 'active');
+    
+    // Store user data
+    localStorage.setItem('robloxmarket_token', data.token);
+    localStorage.setItem('robloxmarket_user', JSON.stringify(data.user));
+    localStorage.removeItem('oauth_state');
+    
+    // Step 3: Creating session
+    updateStep(3, 'completed');
+    updateStep(4, 'active');
+    
+    // Update UI
+    document.getElementById('statusTitle').textContent = 'Login Successful!';
+    document.getElementById('statusMessage').textContent = `Welcome, ${data.user.username}!`;
+    document.querySelector('.processing-icon i').classList.remove('fa-spin');
+    document.querySelector('.processing-icon i').className = 'fas fa-check-circle';
+    document.querySelector('.processing-icon').style.color = '#00cc66';
+    
+    // Step 4: Redirect
+    updateStep(4, 'completed');
+    
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 1500);
+    
+  } catch (err) {
+    showError(err.message);
+    console.error('Login error:', err);
+  }
+}
             
             // Start processing
             processCallback();
@@ -282,4 +282,5 @@
         }
     </script>
 </body>
+
 </html>
