@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile | Roblox Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .profile-container {
+            margin-top: 120px;
+            padding: 40px 0;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #8b0000;
+            overflow: hidden;
+            background: #222;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #8b0000;
+        }
+        
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .profile-info h1 {
+            font-size: 2.5rem;
+            color: #f0f0f0;
+            margin-bottom: 10px;
+        }
+        
+        .profile-info .discord-tag {
+            color: #b0b0b0;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        .profile-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: #8b0000;
+        }
+        
+        .stat-label {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+        
+        .user-listings {
+            margin-top: 50px;
+        }
+        
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+        
+        .listing-card {
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .listing-card:hover {
+            border-color: #8b0000;
+            transform: translateY(-5px);
+        }
+        
+        .listing-image {
+            width: 100%;
+            height: 180px;
+            background: rgba(30, 30, 30, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .listing-image i {
+            font-size: 3rem;
+            color: #666;
+        }
+        
+        .listing-content {
+            padding: 20px;
+        }
+        
+        .listing-title {
+            font-size: 1.2rem;
+            color: #f0f0f0;
+            margin-bottom: 10px;
+        }
+        
+        .listing-price {
+            color: #8b0000;
+            font-weight: 900;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+        
+        .listing-status {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .status-pending {
+            background: rgba(255, 170, 0, 0.1);
+            color: #ffaa00;
+            border: 1px solid #ffaa00;
+        }
+        
+        .status-approved {
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+            border: 1px solid #00ff00;
+        }
+        
+        .status-rejected {
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff4444;
+            border: 1px solid #ff4444;
+        }
+        
+        .no-listings {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+        
+        .no-listings i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER - Same as other pages -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">ROBLOX<span>MARKET</span></a>
+                
+                <nav>
+                    <ul>
+                        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="store.html"><i class="fas fa-store"></i> Store</a></li>
+                        <li><a href="dashboard.html"><i class="fas fa-user"></i> Dashboard</a></li>
+                        <li><a href="create.html"><i class="fas fa-plus-circle"></i> Create</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="auth-buttons">
+                    <!-- Dynamic auth buttons -->
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- PROFILE CONTENT -->
+    <section class="profile-container">
+        <div class="container">
+            <div id="profile-content">
+                <!-- Profile will be loaded here -->
+                <div style="text-align: center; padding: 60px 0;">
+                    <div class="spinner" style="font-size: 3rem; color: #8b0000; margin-bottom: 20px;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                    <p style="color: #b0b0b0;">Loading profile...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER - Same as other pages -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="logo">ROBLOX<span>MARKET</span></h3>
+                    <p class="footer-text">The ultimate marketplace for Roblox creators and developers.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Marketplace</h4>
+                    <ul class="footer-links">
+                        <li><a href="store.html">Browse Assets</a></li>
+                        <li><a href="create.html">Sell Your Items</a></li>
+                        <li><a href="#">Featured</a></li>
+                        <li><a href="#">Top Sellers</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Freelance</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Find Developers</a></li>
+                        <li><a href="#">Post a Job</a></li>
+                        <li><a href="#">Freelancer Profiles</a></li>
+                        <li><a href="#">Hire Guides</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Safety & Trust</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 RobloxMarket. Not affiliated with Roblox Corporation.</p>
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fas fa-coins"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get user ID from URL or use current user
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetUserId = urlParams.get('user');
+            
+            async function loadProfile() {
+                try {
+                    // Get current user data
+                    const userResponse = await fetch('/api/user');
+                    const userData = await userResponse.json();
+                    
+                    // Get user's listings
+                    const listingsResponse = await fetch(`/api/user/listings${targetUserId ? `?userId=${targetUserId}` : ''}`);
+                    const listingsData = await listingsResponse.json();
+                    
+                    const profileUserId = targetUserId || (userData.authenticated ? userData.user.id : null);
+                    const profileUsername = targetUserId ? listingsData.username : (userData.authenticated ? userData.user.global_name || userData.user.username : 'Guest');
+                    
+                    // Calculate stats
+                    const approvedCount = listingsData.listings.filter(l => l.status === 'approved').length;
+                    const pendingCount = listingsData.listings.filter(l => l.status === 'pending').length;
+                    const rejectedCount = listingsData.listings.filter(l => l.status === 'rejected').length;
+                    const totalViews = listingsData.listings.reduce((sum, l) => sum + (l.views || 0), 0);
+                    
+                    // Create profile HTML
+                    const profileHTML = `
+                        <div class="profile-header">
+                            <div class="profile-avatar" id="profile-avatar">
+                                ${userData.authenticated && userData.user.avatar_url ? 
+                                    `<img src="${userData.user.avatar_url}" alt="${profileUsername}">` : 
+                                    `<i class="fas fa-user"></i>`
+                                }
+                            </div>
+                            <div class="profile-info">
+                                <h1>${profileUsername}</h1>
+                                ${userData.authenticated && userData.user.discriminator ? 
+                                    `<div class="discord-tag">${userData.user.username}#${userData.user.discriminator}</div>` : ''
+                                }
+                                ${userData.authenticated ? 
+                                    `<div class="profile-stats">
+                                        <div class="stat-item">
+                                            <div class="stat-number">${approvedCount}</div>
+                                            <div class="stat-label">Approved</div>
+                                        </div>
+                                        <div class="stat-item">
+                                            <div class="stat-number">${pendingCount}</div>
+                                            <div class="stat-label">Pending</div>
+                                        </div>
+                                        <div class="stat-item">
+                                            <div class="stat-number">${rejectedCount}</div>
+                                            <div class="stat-label">Rejected</div>
+                                        </div>
+                                        <div class="stat-item">
+                                            <div class="stat-number">${totalViews}</div>
+                                            <div class="stat-label">Views</div>
+                                        </div>
+                                    </div>` : ''
+                                }
+                            </div>
+                        </div>
+                        
+                        <div class="user-listings">
+                            <h2 style="font-size: 2rem; margin-bottom: 30px; color: #f0f0f0;">
+                                <i class="fas fa-box-open"></i> Listings
+                            </h2>
+                            
+                            ${listingsData.listings.length > 0 ? 
+                                `<div class="listings-grid" id="user-listings-grid">
+                                    ${listingsData.listings.map(listing => `
+                                        <div class="listing-card">
+                                            <div class="listing-image">
+                                                <i class="fas fa-${listing.category === 'scripting' ? 'code' : 
+                                                                     listing.category === 'building' ? 'landmark' : 
+                                                                     listing.category === 'gui' ? 'paint-brush' : 'cube'}"></i>
+                                            </div>
+                                            <div class="listing-content">
+                                                <h3 class="listing-title">${listing.title}</h3>
+                                                <div class="listing-price">$${listing.price} USD</div>
+                                                <div class="listing-status status-${listing.status}">
+                                                    ${listing.status.charAt(0).toUpperCase() + listing.status.slice(1)}
+                                                </div>
+                                                <div style="color: #b0b0b0; font-size: 0.9rem; margin-top: 10px;">
+                                                    <i class="far fa-eye"></i> ${listing.views || 0} views
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>` : 
+                                `<div class="no-listings">
+                                    <i class="fas fa-box-open"></i>
+                                    <h3 style="color: #b0b0b0; margin-bottom: 15px;">No Listings Yet</h3>
+                                    <p>This user hasn't created any listings.</p>
+                                </div>`
+                            }
+                        </div>
+                    `;
+                    
+                    document.getElementById('profile-content').innerHTML = profileHTML;
+                    
+                } catch (error) {
+                    console.error('Error loading profile:', error);
+                    document.getElementById('profile-content').innerHTML = `
+                        <div style="text-align: center; padding: 60px 0;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #8b0000; margin-bottom: 20px;"></i>
+                            <h3 style="color: #b0b0b0;">Failed to load profile</h3>
+                            <p style="color: #666;">Please try again later.</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            loadProfile();
+        });
+    </script>
+</body>
+</html>

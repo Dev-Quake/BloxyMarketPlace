@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Roblox Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- HEADER - EXACT COPY FROM INDEX.HTML -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">ROBLOX<span>MARKET</span></a>
+                
+                <nav>
+                    <ul>
+                        <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="store.html"><i class="fas fa-store"></i> Store</a></li>
+                        <li><a href="#" class="active"><i class="fas fa-user"></i> Dashboard</a></li>
+                        <li><a href="create.html"><i class="fas fa-plus-circle"></i> Create</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="auth-buttons">
+                    <!-- Dynamic auth buttons from script.js -->
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- DASHBOARD CONTENT -->
+    <section class="dashboard-section" style="margin-top: 120px; padding: 60px 0;">
+        <div class="container">
+            <!-- Welcome Message -->
+            <div class="dashboard-welcome" style="text-align: center; margin-bottom: 50px;">
+                <h1 class="glitch" data-text="My Dashboard" style="font-size: 3rem; margin-bottom: 15px;">My Dashboard</h1>
+                <p style="color: #b0b0b0; font-size: 1.1rem;">Manage your listings and track their status</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="dashboard-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px; margin-bottom: 50px;">
+                <div class="stat-card" style="background: rgba(20, 20, 20, 0.8); border: 1px solid #333; border-radius: 10px; padding: 25px; text-align: center; transition: all 0.3s;">
+                    <div class="stat-icon" style="font-size: 2.5rem; color: #8b0000; margin-bottom: 15px;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-number" style="font-size: 2rem; font-weight: 900; color: #f0f0f0;" id="approved-count">0</div>
+                    <div class="stat-label" style="color: #b0b0b0; font-size: 0.9rem; text-transform: uppercase;">Approved</div>
+                </div>
+                
+                <div class="stat-card" style="background: rgba(20, 20, 20, 0.8); border: 1px solid #333; border-radius: 10px; padding: 25px; text-align: center; transition: all 0.3s;">
+                    <div class="stat-icon" style="font-size: 2.5rem; color: #ffaa00; margin-bottom: 15px;">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-number" style="font-size: 2rem; font-weight: 900; color: #f0f0f0;" id="pending-count">0</div>
+                    <div class="stat-label" style="color: #b0b0b0; font-size: 0.9rem; text-transform: uppercase;">Pending</div>
+                </div>
+                
+                <div class="stat-card" style="background: rgba(20, 20, 20, 0.8); border: 1px solid #333; border-radius: 10px; padding: 25px; text-align: center; transition: all 0.3s;">
+                    <div class="stat-icon" style="font-size: 2.5rem; color: #8b0000; margin-bottom: 15px;">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-number" style="font-size: 2rem; font-weight: 900; color: #f0f0f0;" id="views-count">0</div>
+                    <div class="stat-label" style="color: #b0b0b0; font-size: 0.9rem; text-transform: uppercase;">Total Views</div>
+                </div>
+                
+                <div class="stat-card" style="background: rgba(20, 20, 20, 0.8); border: 1px solid #333; border-radius: 10px; padding: 25px; text-align: center; transition: all 0.3s;">
+                    <div class="stat-icon" style="font-size: 2.5rem; color: #8b0000; margin-bottom: 15px;">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-number" style="font-size: 2rem; font-weight: 900; color: #f0f0f0;" id="contacts-count">0</div>
+                    <div class="stat-label" style="color: #b0b0b0; font-size: 0.9rem; text-transform: uppercase;">Contacts</div>
+                </div>
+            </div>
+
+            <!-- Create New Button -->
+            <div style="text-align: center; margin-bottom: 50px;">
+                <a href="create.html" class="btn btn-primary" style="padding: 15px 40px; font-size: 1.1rem;">
+                    <i class="fas fa-plus-circle"></i> Create New Listing
+                </a>
+                <p style="color: #666; margin-top: 15px; font-size: 0.9rem;">
+                    Your listing will be reviewed by admins before appearing on the marketplace
+                </p>
+            </div>
+
+            <!-- My Listings Tabs -->
+            <div class="listings-tabs" style="margin-bottom: 40px;">
+                <div class="tabs-header" style="display: flex; gap: 10px; border-bottom: 1px solid #333; margin-bottom: 30px;">
+                    <button class="tab-btn active" data-tab="active" style="background: none; border: none; color: #b0b0b0; padding: 15px 25px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.3s;">
+                        <i class="fas fa-box-open"></i> Active Listings
+                    </button>
+                    <button class="tab-btn" data-tab="pending" style="background: none; border: none; color: #b0b0b0; padding: 15px 25px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.3s;">
+                        <i class="fas fa-clock"></i> Pending Approval
+                    </button>
+                    <button class="tab-btn" data-tab="drafts" style="background: none; border: none; color: #b0b0b0; padding: 15px 25px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.3s;">
+                        <i class="fas fa-edit"></i> Drafts
+                    </button>
+                </div>
+                
+                <!-- Active Listings Tab -->
+                <div class="tab-content active" id="active-tab">
+                    <div class="no-listings" style="text-align: center; padding: 50px; color: #666;">
+                        <i class="fas fa-box-open" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                        <h3 style="color: #b0b0b0; margin-bottom: 15px;">No Active Listings</h3>
+                        <p>Create your first listing to start selling!</p>
+                    </div>
+                    
+                    <!-- Listing cards will be loaded here dynamically -->
+                    <div id="active-listings-container"></div>
+                </div>
+                
+                <!-- Pending Tab -->
+                <div class="tab-content" id="pending-tab">
+                    <div class="no-listings" style="text-align: center; padding: 50px; color: #666;">
+                        <i class="fas fa-clock" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                        <h3 style="color: #b0b0b0; margin-bottom: 15px;">No Pending Listings</h3>
+                        <p>Once you create a listing, it will appear here while awaiting admin approval.</p>
+                    </div>
+                </div>
+                
+                <!-- Drafts Tab -->
+                <div class="tab-content" id="drafts-tab">
+                    <div class="no-listings" style="text-align: center; padding: 50px; color: #666;">
+                        <i class="fas fa-edit" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.3;"></i>
+                        <h3 style="color: #b0b0b0; margin-bottom: 15px;">No Drafts</h3>
+                        <p>Save listings as drafts to finish later.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Contacts -->
+            <div class="contacts-section" style="background: rgba(20, 20, 20, 0.5); border: 1px solid #333; border-radius: 10px; padding: 30px; margin-top: 50px;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-comments" style="color: #8b0000;"></i> Recent Contacts
+                </h3>
+                <div class="no-contacts" style="text-align: center; padding: 30px; color: #666;">
+                    <i class="fas fa-comment-slash" style="font-size: 2rem; margin-bottom: 15px; opacity: 0.3;"></i>
+                    <p>No contact requests yet</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER - EXACT COPY FROM INDEX.HTML -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="logo">ROBLOX<span>MARKET</span></h3>
+                    <p class="footer-text">The ultimate marketplace for Roblox creators and developers.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Marketplace</h4>
+                    <ul class="footer-links">
+                        <li><a href="store.html">Browse Assets</a></li>
+                        <li><a href="create.html">Sell Your Items</a></li>
+                        <li><a href="#">Featured</a></li>
+                        <li><a href="#">Top Sellers</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Freelance</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Find Developers</a></li>
+                        <li><a href="#">Post a Job</a></li>
+                        <li><a href="#">Freelancer Profiles</a></li>
+                        <li><a href="#">Hire Guides</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Safety & Trust</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 RobloxMarket. Not affiliated with Roblox Corporation.</p>
+                <div class="payment-methods">
+                    <i class="fab fa-cc-visa"></i>
+                    <i class="fab fa-cc-mastercard"></i>
+                    <i class="fab fa-cc-paypal"></i>
+                    <i class="fas fa-coins"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Update active tab button
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update active tab content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === `${tabId}-tab`) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Tab button hover effects
+            tabBtns.forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.color = '#f0f0f0';
+                        this.style.borderBottomColor = '#8b0000';
+                    }
+                });
+                
+                btn.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('active')) {
+                        this.style.color = '#b0b0b0';
+                        this.style.borderBottomColor = 'transparent';
+                    }
+                });
+            });
+            
+            // Set active tab button style
+            tabBtns.forEach(btn => {
+                if (btn.classList.contains('active')) {
+                    btn.style.color = '#8b0000';
+                    btn.style.borderBottomColor = '#8b0000';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

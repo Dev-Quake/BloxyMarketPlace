@@ -163,3 +163,30 @@ async function logoutUser() {
         window.location.reload();
     }
 }
+
+// Add to your existing script.js
+async function submitListing(listingData) {
+    try {
+        const response = await fetch('/api/listings', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(listingData)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            alert('Listing submitted for approval! You will be notified on Discord when it\'s reviewed.');
+            window.location.href = 'dashboard.html';
+        } else {
+            alert('Failed to submit listing: ' + (data.error || 'Unknown error'));
+        }
+    } catch (error) {
+        console.error('Error submitting listing:', error);
+        alert('Network error. Please try again.');
+    }
+}
+
+// Update your create.html form submission to use this function
